@@ -20,7 +20,9 @@ const allowCors = (fn) => async (req, res) => {
 };
 
 const handler = (request, response) => {
-  console.log(request.headers);
+  if (!request.headers["user-agent"].includes("Figma")) {
+    return response.status(401).json({ body: "Incorrect request" });
+  }
   return axios
     .get("https://thispersondoesnotexist.com/image", {
       responseType: "arraybuffer",
