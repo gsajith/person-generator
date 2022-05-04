@@ -24,7 +24,13 @@ const handler = (request, response) => {
     .get("https://thispersondoesnotexist.com/image", {
       responseType: "arraybuffer",
     })
-    .then((res) => Buffer.from(res.data, "binary").toString("base64"))
+    .then((res) => {
+      response.status(200).json({
+        personImage: Buffer.from(response.data, "binary").toString("base64"),
+        query: request.query,
+        cookies: request.cookies,
+      });
+    })
     .catch((error) => {
       response.status(error.status).json(error.response.data);
     });
