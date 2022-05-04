@@ -20,7 +20,7 @@ const allowCors = (fn) => async (req, res) => {
 };
 
 const handler = (request, response) => {
-  console.log(request.headers.host);
+  console.log(request.headers);
   return axios
     .get("https://thispersondoesnotexist.com/image", {
       responseType: "arraybuffer",
