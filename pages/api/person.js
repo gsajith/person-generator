@@ -26,7 +26,7 @@ const handler = (request, response) => {
     })
     .then((res) => {
       response.status(200).json({
-        personImage: Buffer.from(response.data, "binary").toString("base64"),
+        personImage: Buffer.from(res.data, "binary").toString("base64"),
         query: request.query,
         cookies: request.cookies,
       });
