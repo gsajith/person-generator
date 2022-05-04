@@ -1,3 +1,5 @@
+const axios = require("axios").default;
+
 const allowCors = (fn) => async (req, res) => {
   res.setHeader("Access-Control-Allow-Credentials", true);
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -18,11 +20,19 @@ const allowCors = (fn) => async (req, res) => {
 };
 
 const handler = (request, response) => {
-  response.status(200).json({
-    body: "This is the body",
-    query: request.query,
-    cookies: request.cookies,
-  });
+  return axios
+    .get("https://thispersondoesnotexist.com/image")
+    .then((res) => {
+      console.log(res.data);
+      response.status(200).json({
+        personImage: res.data,
+        query: request.query,
+        cookies: request.cookies,
+      });
+    })
+    .catch((error) => {
+      response.status(error.status).json(error.response.data);
+    });
 };
 
 module.exports = allowCors(handler);
