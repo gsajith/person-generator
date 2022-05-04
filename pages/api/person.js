@@ -21,15 +21,10 @@ const allowCors = (fn) => async (req, res) => {
 
 const handler = (request, response) => {
   return axios
-    .get("https://thispersondoesnotexist.com/image")
-    .then((res) => {
-      console.log(res.data);
-      response.status(200).json({
-        personImage: res.data,
-        query: request.query,
-        cookies: request.cookies,
-      });
+    .get("https://thispersondoesnotexist.com/image", {
+      responseType: "arraybuffer",
     })
+    .then((res) => Buffer.from(res.data, "binary").toString("base64"))
     .catch((error) => {
       response.status(error.status).json(error.response.data);
     });
