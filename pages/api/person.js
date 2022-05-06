@@ -3,8 +3,6 @@ const axios = require("axios").default;
 const allowCors = (fn) => async (req, res) => {
   res.setHeader("Access-Control-Allow-Credentials", true);
   res.setHeader("Access-Control-Allow-Origin", "*");
-  // another option
-  // res.setHeader('Access-Control-Allow-Origin', req.header.origin);
   res.setHeader("Access-Control-Allow-Methods", "GET,OPTIONS");
   res.setHeader(
     "Access-Control-Allow-Headers",
