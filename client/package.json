@@ -23,7 +23,7 @@
     "editorType": [
       "figma"
     ],
-    "id": "person-generator",
+    "id": "1104262872207297670",
     "name": "Person Generator",
     "main": "src/main.ts",
     "ui": "src/ui.tsx"
