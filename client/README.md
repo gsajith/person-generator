@@ -1,8 +1,8 @@
-# React Editor
+# This is just the Figma plugin
 
 ## Development guide
 
-*This plugin is built with [Create Figma Plugin](https://yuanqing.github.io/create-figma-plugin/).*
+_This plugin is built with [Create Figma Plugin](https://yuanqing.github.io/create-figma-plugin/)._
 
 ### Pre-requisites
 

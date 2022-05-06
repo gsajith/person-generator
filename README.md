@@ -1,1 +1,3 @@
-This is a starter template for [Learn Next.js](https://nextjs.org/learn).
+# This is the NextJS app for the backend
+
+## The plugin is in `client`
