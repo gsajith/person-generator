@@ -4,16 +4,12 @@ import {
   render,
   VerticalSpace,
   IconSwap16,
-  IconGrid32,
-  Tabs,
-  TabsOption,
-  TextboxNumeric,
 } from "@create-figma-plugin/ui";
-import { emit } from "@create-figma-plugin/utilities";
+import { emit, on } from "@create-figma-plugin/utilities";
 import { h, JSX } from "preact";
 import { useCallback, useEffect, useRef, useState } from "preact/hooks";
 
-import { InsertSingleHandler } from "./types";
+import { InsertSingleHandler, SelectionChangeHandler } from "./types";
 
 function convertDataURIToBinary(dataURI: string) {
   var raw = window.atob(dataURI);
@@ -26,12 +22,16 @@ function convertDataURIToBinary(dataURI: string) {
   return array;
 }
 
+const SINGLE_IMAGE = "Single image";
+const MULTIPLE_IMAGE = "Multiple images";
+
 function Plugin() {
   const [imageCount, setImageCount] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [tabValue, setTabValue] = useState("Single image");
+  const [tabValue, setTabValue] = useState(SINGLE_IMAGE);
   const [numberInputValue, setNumberInputValue] = useState("1");
   const [imageData, setImageData] = useState("");
+  const [nodeSelected, setNodeSelected] = useState(false);
   const imageRef = useRef(null);
 
   useEffect(() => {
@@ -47,11 +47,14 @@ function Plugin() {
     }
   }, [imageData]);
 
-  function handleTabChange(event: JSX.TargetedEvent<HTMLInputElement>) {
-    const newValue = event.currentTarget.value;
-    console.log(newValue);
-    setTabValue(newValue);
-  }
+  const handleTabChange = useCallback(
+    (event: JSX.TargetedEvent<HTMLInputElement>) => {
+      const newValue = event.currentTarget.value;
+      setTabValue(newValue);
+    },
+    [setTabValue]
+  );
+
   const handleRefreshImage = useCallback(() => {
     setImageCount((imageCount) => imageCount + 1);
     setLoading(true);
@@ -61,19 +64,26 @@ function Plugin() {
     function () {
       emit<InsertSingleHandler>(
         "INSERT_SINGLE",
-        convertDataURIToBinary(imageData)
+        convertDataURIToBinary(imageData),
+        !nodeSelected
       );
     },
-    [imageData]
+    [imageData, nodeSelected]
   );
 
-  function handleNumberInput(event: JSX.TargetedEvent<HTMLInputElement>) {
-    const newValue = event.currentTarget.value;
-    console.log(newValue);
-    setNumberInputValue(newValue);
-  }
+  const handleNumberInput = useCallback(
+    (event: JSX.TargetedEvent<HTMLInputElement>) => {
+      const newValue = event.currentTarget.value;
+      setNumberInputValue(newValue);
+    },
+    [setNumberInputValue]
+  );
 
-  const tabOptions: Array<TabsOption> = [
+  on<SelectionChangeHandler>("SELECTION_CHANGE", (selected: boolean) => {
+    setNodeSelected(selected);
+  });
+
+  /* const tabOptions: Array<TabsOption> = [
     {
       children: (
         <div>
@@ -81,10 +91,6 @@ function Plugin() {
           <img
             ref={imageRef}
             onLoad={(evt) => {
-              console.log(
-                "loaded",
-                (evt.target as HTMLImageElement).naturalHeight
-              );
               setLoading(false);
             }}
             style={{ width: "100%" }}
@@ -161,25 +167,53 @@ function Plugin() {
       ),
       value: "Multiple images",
     },
-  ];
+  ];*/
+
   return (
     <Container>
       <VerticalSpace space="small" />
-      <Tabs onChange={handleTabChange} options={tabOptions} value={tabValue} />
+      {/* <Tabs onChange={handleTabChange} options={tabOptions} value={tabValue} /> */}
+      <img
+        ref={imageRef}
+        onLoad={(evt) => {
+          setLoading(false);
+        }}
+        style={{ width: "100%", minHeight: 274, backgroundColor: "#dadada" }}
+      />
+      <VerticalSpace space="small" />
+      <Button
+        loading={loading}
+        secondary
+        fullWidth
+        onClick={handleRefreshImage}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}>
+          <IconSwap16 />
+          <div style={{ marginInlineStart: 8 }}>New Image</div>
+        </div>
+      </Button>
 
       <VerticalSpace space="small" />
       <Button
         disabled={loading}
         fullWidth
         onClick={
-          tabValue === "Multiple images"
+          tabValue === MULTIPLE_IMAGE
             ? handleInsertSingleImage
             : handleInsertSingleImage
         }>
-        Insert
-        {tabValue === "Multiple images" && " " + numberInputValue + " images"}
+        {!nodeSelected && (
+          <div>
+            Insert
+            {tabValue === MULTIPLE_IMAGE && " " + numberInputValue + " images"}
+          </div>
+        )}
+        {nodeSelected && <div>Add image as fill</div>}
       </Button>
-      <VerticalSpace space="small" />
     </Container>
   );
 }
