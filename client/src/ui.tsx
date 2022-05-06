@@ -178,7 +178,12 @@ function Plugin() {
         onLoad={(evt) => {
           setLoading(false);
         }}
-        style={{ width: "100%", minHeight: 274, backgroundColor: "#dadada" }}
+        style={{
+          width: "100%",
+          minHeight: 274,
+          backgroundColor: "#333",
+          opacity: loading ? 0.5 : 1,
+        }}
       />
       <VerticalSpace space="small" />
       <Button
