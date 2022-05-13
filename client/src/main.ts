@@ -62,5 +62,5 @@ export default function () {
         !INVALID_INSERTION_TYPES.includes(figma.currentPage.selection[0].type)
     );
   });
-  showUI({ width: 300, height: 390 });
+  showUI({ width: 300, height: 390, themeColors: true });
 }

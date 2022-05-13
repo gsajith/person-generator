@@ -170,7 +170,10 @@ function Plugin() {
   ];*/
 
   return (
-    <Container>
+    <Container
+      style={{
+        backgroundColor: "var(--figma-color-bg)",
+      }}>
       <VerticalSpace space="small" />
       {/* <Tabs onChange={handleTabChange} options={tabOptions} value={tabValue} /> */}
       <img
@@ -187,8 +190,13 @@ function Plugin() {
       />
       <VerticalSpace space="small" />
       <Button
+        style={{
+          color: "var(--figma-color-text)",
+          borderColor: "var(--figma-color-text)",
+        }}
         loading={loading}
         secondary
+        disabled={loading}
         fullWidth
         onClick={handleRefreshImage}>
         <div
